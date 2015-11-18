@@ -35,6 +35,13 @@ class Plugin extends PluginBase
         if (Settings::get('ajax_flash_message_enabled', false)) {
             \Event::listen('cms.page.beforeDisplay', function($controller) {
                 $controller->getTwig()->addExtension(new TwigExtension());
+
+                $controller->addJs('/plugins/ebussola/statefull/assets/js/ajax-flash-message.min.js', [
+                    'id' => 'ebussola-statefull-ajax-flash-message-script',
+                    'data-domain' => trim(\Config::get('app.url'), '/ '),
+                    'data-wrapper' => Settings::get('ajax_flash_message_element_wrapper', 'body'),
+                    'data-delay' => Settings::get('ajax_flash_message_delay', '4500')
+                ]);
             });
         }
     }
@@ -47,8 +54,7 @@ class Plugin extends PluginBase
     public function registerComponents()
     {
         return [
-            '\Ebussola\Statefull\Components\AJAXPageContainer' => 'ajax_page_container',
-            '\Ebussola\Statefull\Components\AjaxFlashMessage' => 'ajax_flash_message'
+            '\Ebussola\Statefull\Components\AJAXPageContainer' => 'ajax_page_container'
         ];
     }
 

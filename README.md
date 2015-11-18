@@ -52,7 +52,7 @@ Remember to change the route on the page too.
 
 ## The Ajax Flash Message
 
-Only use this component if your site use the [flash tag markup](https://octobercms.com/docs/markup/tag-flash)
+Only use this feature if your site use the [flash tag markup](https://octobercms.com/docs/markup/tag-flash)
 
 Because of your site is now statefull, you will need to check if there is any message to be delivered to user.
 This component do this job.
@@ -61,8 +61,7 @@ This component do this job.
 
 Make sure you are using the {% flash %} tag.
 
-1. Drop the component onto your layout.
-2. Active this feature on the settings page.
+By default this feature is disabled, **just active this feature on the settings page**.
 
 In the settings you can adjust the delay to close the alert
 or set the wrapper element where the alert will be placed.
