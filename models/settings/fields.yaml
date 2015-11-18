@@ -1,0 +1,8 @@
+# ===================================
+#  Form Field Definitions
+# ===================================
+
+fields:
+  ajax_page_container:
+    label: Container page for components
+    default: /ajax
