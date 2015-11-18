@@ -3,6 +3,33 @@
 # ===================================
 
 fields:
+  ajax_page_container_section:
+    label: Ajax Page Container
+    type: section
+
   ajax_page_container:
     label: Container page for components
     default: /ajax
+
+
+
+
+
+  ajax_flash_message_section:
+    label: Ajax Flash Message
+    type: section
+
+  ajax_flash_message_enabled:
+    label: Active or deactive this feature
+    type: switch
+    default: false
+
+  ajax_flash_message_element_wrapper:
+    label: Element where the alert will be appended
+    comment: You can use "#" for ID or "." for classes
+    default: body
+
+  ajax_flash_message_delay:
+    label: Delay to close the alert
+    default: 4500
+    comment: Millisecond (ms) / Set 0 to infinity

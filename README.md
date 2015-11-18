@@ -32,7 +32,7 @@ Use the AJAX Page Container
 It is used to centralize the ajax framework requests. Because now you are running your website on
 another infrastructure you need to keep your plugins working.
 
-### Configuring
+### Setup
 
 1. Create a page with the route /ajax
 (You can customise this route)
@@ -48,3 +48,25 @@ another infrastructure you need to keep your plugins working.
 
 You can customise the url of ajax page container on the settings.
 Remember to change the route on the page too.
+
+
+## The Ajax Flash Message
+
+Only use this component if your site use the [flash tag markup](https://octobercms.com/docs/markup/tag-flash)
+
+Because of your site is now statefull, you will need to check if there is any message to be delivered to user.
+This component do this job.
+
+### Setup
+
+Make sure you are using the {% flash %} tag.
+
+1. Drop the component onto your layout.
+2. Active this feature on the settings page.
+
+In the settings you can adjust the delay to close the alert
+or set the wrapper element where the alert will be placed.
+
+### Checking for messages without redirect
+
+You can call the function window.ebussolaStatefullCheckMessages whenever you want to check for new messages.

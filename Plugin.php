@@ -1,6 +1,8 @@
 <?php namespace eBussola\Statefull;
 
+use eBussola\Statefull\Classes\TwigExtension;
 use System\Classes\PluginBase;
+use Ebussola\Statefull\Models\Settings;
 
 /**
  * statefull Plugin Information File
@@ -24,6 +26,20 @@ class Plugin extends PluginBase
     }
 
     /**
+     * Boot method, called right before the request route.
+     *
+     * @return array
+     */
+    public function boot()
+    {
+        if (Settings::get('ajax_flash_message_enabled', false)) {
+            \Event::listen('cms.page.beforeDisplay', function($controller) {
+                $controller->getTwig()->addExtension(new TwigExtension());
+            });
+        }
+    }
+
+    /**
      * Registers any front-end components implemented in this plugin.
      *
      * @return array
@@ -31,7 +47,8 @@ class Plugin extends PluginBase
     public function registerComponents()
     {
         return [
-            '\Ebussola\Statefull\Components\AJAXPageContainer' => 'ajax_page_container'
+            '\Ebussola\Statefull\Components\AJAXPageContainer' => 'ajax_page_container',
+            '\Ebussola\Statefull\Components\AjaxFlashMessage' => 'ajax_flash_message'
         ];
     }
 
