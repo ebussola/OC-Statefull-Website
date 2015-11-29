@@ -69,3 +69,22 @@ or set the wrapper element where the alert will be placed.
 ### Checking for messages without redirect
 
 You can call the function window.ebussolaStatefullCheckMessages whenever you want to check for new messages.
+
+
+```php
+if ($_SERVER['REQUEST_METHOD'] === 'GET') {
+    $cachePath = __DIR__ . '/storage/statefull-cache';
+    $pathInfo = isset($_SERVER['PATH_INFO']) ? $_SERVER['PATH_INFO'] : '/';
+    $blacklist = file_exists($cachePath . '/index-blacklist.config') ?
+        file_get_contents($cachePath . '/index-blacklist.config') : null;
+
+    if (preg_match('/^(?!\/backend)(?!\/combine)' . $blacklist . '/i', $pathInfo) === 1) {
+        $file = $cachePath . $pathInfo . '.html';
+
+        if (file_exists($file)) {
+            echo file_get_contents($file);
+            exit(0);
+        }
+    }
+}
+``
