@@ -1,0 +1,8 @@
+# ===================================
+#  Form Field Definitions
+# ===================================
+
+fields:
+  url:
+    label: URL
+    comment: You can use the complete URL or the beginner partial part.

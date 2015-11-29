@@ -44,6 +44,8 @@ class Plugin extends PluginBase
                 ]);
             });
         }
+
+        $this->registerConsoleCommand('statefull:cache:refresh', '\ebussola\statefull\commands\StatefullCacheRefresh');
     }
 
     /**
@@ -55,6 +57,39 @@ class Plugin extends PluginBase
     {
         return [
             '\Ebussola\Statefull\Components\AJAXPageContainer' => 'ajax_page_container'
+        ];
+    }
+
+    /**
+     * Registers back-end navigation items for this plugin.
+     *
+     * @return array
+     */
+    public function registerNavigation()
+    {
+        return [
+            'statefull' => [
+                'label'       => 'Statefull Website',
+                'url'         => \Backend::url('ebussola/statefull/urldynamics'),
+                'icon'        => 'icon-rocket',
+                'permissions' => ['ebussola.statefull.*'],
+                'order'       => 500,
+
+                'sideMenu' => [
+                    'urldynamics' => [
+                        'label'       => 'Dynamics URL',
+                        'icon'        => 'icon-code',
+                        'url'         => \Backend::url('ebussola/statefull/urldynamics'),
+                        'permissions' => ['ebussola.statefull.*']
+                    ],
+                    'urlblacklist' => [
+                        'label'       => 'URL Blacklist',
+                        'icon'        => 'icon-minus-circle',
+                        'url'         => \Backend::url('ebussola/statefull/urlblacklist'),
+                        'permissions' => ['ebussola.statefull.*']
+                    ]
+                ]
+            ]
         ];
     }
 
@@ -74,7 +109,7 @@ class Plugin extends PluginBase
                 'class' => '\Ebussola\Statefull\Models\Settings',
                 'order'       => 500,
                 'keywords'    => 'statefull ajax',
-                'permissions' => ['ebussola.settings.main']
+                'permissions' => ['ebussola.statefull.settings.main']
             ]
         ];
     }
@@ -87,7 +122,7 @@ class Plugin extends PluginBase
     public function registerPermissions()
     {
         return [
-            'ebussola.settings.main' => [
+            'ebussola.statefull.settings.main' => [
                 'label' => 'Manage Statefull website settings',
                 'tab' => 'system::lang.permissions.name'
             ]

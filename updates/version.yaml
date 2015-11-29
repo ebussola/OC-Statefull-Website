@@ -1,1 +1,4 @@
-1.0.1: First version of statefull
+1.0.1:
+  - First version of statefull
+  - create_url_blacklists_table.php
+  - create_url_dynamics_table.php

@@ -1,0 +1,31 @@
+# ===================================
+#  Form Behavior Config
+# ===================================
+
+# Record name
+name: Url Blacklist
+
+# Model Form Field configuration
+form: $/ebussola/statefull/models/urlblacklist/fields.yaml
+
+# Model Class name
+modelClass: Ebussola\Statefull\Models\UrlBlacklist
+
+# Default redirect location
+defaultRedirect: ebussola/statefull/urlblacklist
+
+# Create page
+create:
+    title: Create Url Blacklist
+    redirect: ebussola/statefull/urlblacklist/update/:id
+    redirectClose: ebussola/statefull/urlblacklist
+
+# Update page
+update:
+    title: Edit Url Blacklist
+    redirect: ebussola/statefull/urlblacklist
+    redirectClose: ebussola/statefull/urlblacklist
+
+# Preview page
+preview:
+    title: Preview Url Blacklist

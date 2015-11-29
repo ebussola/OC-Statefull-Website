@@ -1,0 +1,31 @@
+# ===================================
+#  Form Behavior Config
+# ===================================
+
+# Record name
+name: Url Dynamic
+
+# Model Form Field configuration
+form: $/ebussola/statefull/models/urldynamic/fields.yaml
+
+# Model Class name
+modelClass: Ebussola\Statefull\Models\UrlDynamic
+
+# Default redirect location
+defaultRedirect: ebussola/statefull/urldynamics
+
+# Create page
+create:
+    title: Create Url Dynamic
+    redirect: ebussola/statefull/urldynamics/update/:id
+    redirectClose: ebussola/statefull/urldynamics
+
+# Update page
+update:
+    title: Edit Url Dynamic
+    redirect: ebussola/statefull/urldynamics
+    redirectClose: ebussola/statefull/urldynamics
+
+# Preview page
+preview:
+    title: Preview Url Dynamic

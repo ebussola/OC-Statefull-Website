@@ -1,0 +1,23 @@
+# ===================================
+#  Form Field Definitions
+# ===================================
+
+fields:
+  url:
+    label: URL
+
+  parameters_lists:
+    type: repeater
+    form:
+      fields:
+        name:
+          label: Parameter name
+          type: text
+        code:
+          label: Function
+          comment: This script must return a list of strings
+          type: codeeditor
+          default: >
+            <?php
+
+            return [];
