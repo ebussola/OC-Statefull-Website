@@ -58,7 +58,9 @@ class StatefullCacheRefresh extends Command {
             }
             rmdir($dir);
         };
-        $deltree($this->cachePath);
+        if (file_exists($this->cachePath)) {
+            $deltree($this->cachePath);
+        }
 
         // Regular Pages
         $pagesCrawler = new PagesCrawler();
