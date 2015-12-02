@@ -28,6 +28,31 @@ class PagesCrawler
         $theme = \Cms\Classes\Theme::getActiveTheme();
         $pages = \Cms\Classes\Page::listInTheme($theme, true);
 
+        if (class_exists('\RainLab\Pages\Classes\Controller')) {
+
+            // hack RainlabPage's Controller to avoid class name collision
+            $classPath = \App::pluginsPath() . '/rainlab/pages/classes/Controller.php';
+            file_put_contents(
+                $classPath,
+                str_replace(
+                    'use Cms\Classes\Page;',
+                    'use Cms\Classes\Page as BasePage;',
+                    file_get_contents($classPath)
+                )
+            );
+            file_put_contents(
+                $classPath,
+                str_replace(
+                    'new Page(',
+                    'new BasePage(',
+                    file_get_contents($classPath)
+                )
+            );
+            // end of hack
+
+            $pages = array_merge($pages, \RainLab\Pages\Classes\Page::listInTheme($theme, true));
+        }
+
         foreach ($pages as $i => $page) {
             if (!isset($this->pageInfos[$page->url])) {
                 $this->pageInfos[$page->url] = [

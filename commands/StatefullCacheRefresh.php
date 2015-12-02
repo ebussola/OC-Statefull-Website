@@ -86,6 +86,7 @@ class StatefullCacheRefresh extends Command {
         });
 
 
+
         // Index Blacklist
         @mkdir($this->cachePath, 0777, true);
         $indexBlacklist = join('',
