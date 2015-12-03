@@ -11,18 +11,19 @@ Route::get('/ebussola-statefull-ajax-flash-message', function() {
 });
 
 
-$cachePath = App::basePath() . '/storage/statefull-cache';
-$blacklist = file_exists($cachePath . '/route-blacklist.config') ?
-    file_get_contents($cachePath . '/route-blacklist.config') : null;
+if (!Config::get('app.debug')) {
+    $cachePath = App::basePath() . '/storage/statefull-cache';
+    $blacklist = file_exists($cachePath . '/route-blacklist.config') ?
+        file_get_contents($cachePath . '/route-blacklist.config') : null;
 
-Route::get('/{route}', function($route) use ($cachePath) {
-    $file = $cachePath . '/' . $route . '.html';
-    if (file_exists($file)) {
-        return file_get_contents($file);
-    }
-    else {
-        return (new \Cms\Classes\Controller())->run('/' . $route);
-    }
-})
-    ->where('route', '^(?!backend)(?!combine)'. $blacklist .'.*')
-;
+    Route::get('/{route}', function ($route) use ($cachePath) {
+        $file = $cachePath . '/' . $route . '.html';
+        if (file_exists($file)) {
+            return file_get_contents($file);
+        } else {
+            return (new \Cms\Classes\Controller())->run('/' . $route);
+        }
+    })
+        ->where('route', '^(?!backend)(?!combine)'. $blacklist .'.*')
+    ;
+}
