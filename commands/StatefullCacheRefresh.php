@@ -131,20 +131,19 @@ class StatefullCacheRefresh extends Command {
         $parsedList = include $file;
         $originalUrl = $data['url'];
 
+        if (substr($list['name'], -1, 1) == '?') {
+            array_unshift($parsedList, '');
+        }
+
         foreach ($parsedList as $parsedItem) {
 
-            $data['url'] = str_replace($list['name'], $parsedItem, $originalUrl);
+            $data['url'] = rtrim(str_replace($list['name'], $parsedItem, $originalUrl), '/');
 
             if ($i+1 < $data['length']) {
                 $this->dynamicRecursiveProcess($parametersLists, $i + 1, $data);
             }
 
             $this->generateCacheFile($data);
-
-            if (substr($parsedItem, -1, 1) == '?') {
-                $data['url'] = rtrim(str_replace($list['name'], '', $originalUrl), '/');
-                $this->generateCacheFile($data);
-            }
         }
     }
 
@@ -166,10 +165,10 @@ class StatefullCacheRefresh extends Command {
     protected function getOptions()
     {
         return array(
-			array('regular', null, InputOption::VALUE_NONE, 'Run the regular step.'),
-			array('dynamic', null, InputOption::VALUE_NONE, 'Run the dynamic step.'),
-			array('dynamic-item', null, InputOption::VALUE_OPTIONAL | InputOption::VALUE_IS_ARRAY, 'ID of the Dynamic URL registered.', []),
-			array('blacklist', null, InputOption::VALUE_NONE, 'Generate the blacklist file.'),
+		array('regular', null, InputOption::VALUE_NONE, 'Run the regular step.'),
+		array('dynamic', null, InputOption::VALUE_NONE, 'Run the dynamic step.'),
+		array('dynamic-item', null, InputOption::VALUE_OPTIONAL | InputOption::VALUE_IS_ARRAY, 'ID of the Dynamic URL registered.', []),
+		array('blacklist', null, InputOption::VALUE_NONE, 'Generate the blacklist file.'),
         );
     }
 
