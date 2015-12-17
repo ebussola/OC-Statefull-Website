@@ -9,6 +9,8 @@ use Illuminate\Console\Command;
 
 class StatefullCacheRefresh extends Command {
 
+    const CACHE_DIR_NAME = 'statefull-cache';
+
     private $cachePath;
 
     /**
@@ -34,7 +36,7 @@ class StatefullCacheRefresh extends Command {
     {
         parent::__construct();
 
-        $this->cachePath = \App::storagePath() . '/statefull-cache';
+        $this->cachePath = \App::storagePath() . '/' . self::CACHE_DIR_NAME;
     }
 
     /**
@@ -44,24 +46,6 @@ class StatefullCacheRefresh extends Command {
      */
     public function fire()
     {
-        // Clean
-        $deltree = function($dir) {
-            $it = new \RecursiveDirectoryIterator($dir, \RecursiveDirectoryIterator::SKIP_DOTS);
-            $files = new \RecursiveIteratorIterator($it,
-                \RecursiveIteratorIterator::CHILD_FIRST);
-            foreach($files as $file) {
-                if ($file->isDir()){
-                    rmdir($file->getRealPath());
-                } else {
-                    unlink($file->getRealPath());
-                }
-            }
-            rmdir($dir);
-        };
-        if (file_exists($this->cachePath)) {
-            $deltree($this->cachePath);
-        }
-
         // Regular Pages
         $pagesCrawler = new PagesCrawler();
         $pagesCrawler->map(function($pageInfo) {
