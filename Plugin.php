@@ -46,6 +46,7 @@ class Plugin extends PluginBase
         }
 
         $this->registerConsoleCommand('statefull:cache:refresh', '\ebussola\statefull\commands\StatefullCacheRefresh');
+        $this->registerConsoleCommand('statefull:cache:clean', '\ebussola\statefull\commands\StatefullCacheClean');
     }
 
     /**
