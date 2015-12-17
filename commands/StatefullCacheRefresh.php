@@ -6,6 +6,7 @@ use ebussola\statefull\classes\PagesCrawler;
 use Ebussola\Statefull\Models\UrlBlacklist;
 use Ebussola\Statefull\Models\UrlDynamic;
 use Illuminate\Console\Command;
+use Symfony\Component\Console\Input\InputOption;
 
 class StatefullCacheRefresh extends Command {
 
@@ -46,55 +47,79 @@ class StatefullCacheRefresh extends Command {
      */
     public function fire()
     {
-        // Regular Pages
-        $pagesCrawler = new PagesCrawler();
-        $pagesCrawler->map(function($pageInfo) {
-            if ($pageInfo['pageType'] == 'regular') {
-                $file = new \SplFileInfo($pageInfo['url'] . '.html');
+        $runAll = array_reduce(
+            $this->option(),
+            function($runAll, $option) {
+                if ($runAll) {
+                    return ((bool)$option === true) ? false : true;
+                }
 
-                @mkdir($this->cachePath . $file->getPath(), 0777, true);
-                file_put_contents($this->cachePath . $file->getPathname(), $pageInfo['content']());
+                return $runAll;
+            },
+            true
+        );
+
+        if ($this->option('regular') || $runAll) {
+            // Regular Pages
+            $pagesCrawler = new PagesCrawler();
+            $pagesCrawler->map(function($pageInfo) {
+                if ($pageInfo['pageType'] == 'regular') {
+                    $file = new \SplFileInfo($pageInfo['url'] . '.html');
+
+                    @mkdir($this->cachePath . $file->getPath(), 0777, true);
+                    file_put_contents($this->cachePath . $file->getPathname(), $pageInfo['content']());
+                }
+            });
+        }
+
+        if ($this->option('dynamic') || $runAll) {
+            // Dynamic Pages
+
+            $mapUrlDynamic = function ($urlDynamic) {
+                $length = count($urlDynamic->parameters_lists);
+                $this->dynamicRecursiveProcess($urlDynamic->parameters_lists, 0, [
+                    'url' => $urlDynamic->url,
+                    'length' => $length
+                ]);
+            };
+
+            if (count($this->option('dynamic-item')) === 0) {
+                UrlDynamic::all()->map($mapUrlDynamic);
             }
-        });
+            else {
+                foreach ($this->option('dynamic-item') as $dynamicId) {
+                    $mapUrlDynamic(UrlDynamic::find($dynamicId));
+                }
+            }
+        }
 
 
-        // Dynamic Pages
-        UrlDynamic::all()->map(function($urlDynamic) {
+        if ($this->option('blacklist') || $runAll) {
+            // Index Blacklist
+            @mkdir($this->cachePath, 0777, true);
+            $indexBlacklist = join('',
+                array_map(
+                    function ($url) {
+                        $url = str_replace('/', '\/', trim($url, '/'));
+                        return "(?!\\/{$url})";
+                    },
+                    UrlBlacklist::all()->lists('url')
+                )
+            );
+            file_put_contents($this->cachePath . '/index-blacklist.config', $indexBlacklist);
 
-            $length = count($urlDynamic->parameters_lists);
-            $this->dynamicRecursiveProcess($urlDynamic->parameters_lists, 0, [
-                'url' => $urlDynamic->url,
-                'length' => $length
-            ]);
-
-        });
-
-
-
-        // Index Blacklist
-        @mkdir($this->cachePath, 0777, true);
-        $indexBlacklist = join('',
-            array_map(
-                function($url) {
-                    $url = str_replace('/', '\/', trim($url, '/'));
-                    return "(?!\\/{$url})";
-                },
-                UrlBlacklist::all()->lists('url')
-            )
-        );
-        file_put_contents($this->cachePath . '/index-blacklist.config', $indexBlacklist);
-
-        // Route Blacklist
-        $routeBlacklist = join('',
-            array_map(
-                function($url) {
-                    $url = str_replace('/', '\/', trim($url, '/'));
-                    return "(?!{$url})";
-                },
-                UrlBlacklist::all()->lists('url')
-            )
-        );
-        file_put_contents($this->cachePath . '/route-blacklist.config', $routeBlacklist);
+            // Route Blacklist
+            $routeBlacklist = join('',
+                array_map(
+                    function ($url) {
+                        $url = str_replace('/', '\/', trim($url, '/'));
+                        return "(?!{$url})";
+                    },
+                    UrlBlacklist::all()->lists('url')
+                )
+            );
+            file_put_contents($this->cachePath . '/route-blacklist.config', $routeBlacklist);
+        }
     }
 
     public function dynamicRecursiveProcess($parametersLists, $i, $data)
@@ -134,18 +159,6 @@ class StatefullCacheRefresh extends Command {
     }
 
     /**
-     * Get the console command arguments.
-     *
-     * @return array
-     */
-    protected function getArguments()
-    {
-        return array(
-//			array('example', InputArgument::REQUIRED, 'An example argument.'),
-        );
-    }
-
-    /**
      * Get the console command options.
      *
      * @return array
@@ -153,7 +166,10 @@ class StatefullCacheRefresh extends Command {
     protected function getOptions()
     {
         return array(
-//			array('example', null, InputOption::VALUE_OPTIONAL, 'An example option.', null),
+			array('regular', null, InputOption::VALUE_NONE, 'Run the regular step.'),
+			array('dynamic', null, InputOption::VALUE_NONE, 'Run the dynamic step.'),
+			array('dynamic-item', null, InputOption::VALUE_OPTIONAL | InputOption::VALUE_IS_ARRAY, 'ID of the Dynamic URL registered.', []),
+			array('blacklist', null, InputOption::VALUE_NONE, 'Generate the blacklist file.'),
         );
     }
 
