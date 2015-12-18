@@ -79,6 +79,8 @@ class StatefullCacheRefresh extends Command {
                 $length = count($urlDynamic->parameters_lists);
                 $this->dynamicRecursiveProcess($urlDynamic->parameters_lists, 0, [
                     'url' => $urlDynamic->url,
+                    'use_internal_url' => $urlDynamic->use_internal_url,
+                    'internal_url' => $urlDynamic->internal_url,
                     'length' => $length
                 ]);
             };
@@ -130,6 +132,7 @@ class StatefullCacheRefresh extends Command {
 
         $parsedList = include $file;
         $originalUrl = $data['url'];
+        $originalInternalUrl = $data['internal_url'];
 
         if (substr($list['name'], -1, 1) == '?') {
             array_unshift($parsedList, '');
@@ -138,6 +141,10 @@ class StatefullCacheRefresh extends Command {
         foreach ($parsedList as $parsedItem) {
 
             $data['url'] = rtrim(str_replace($list['name'], $parsedItem, $originalUrl), '/');
+
+            if ($data['use_internal_url']) {
+                $data['internal_url'] = rtrim(str_replace($list['name'], $parsedItem, $originalInternalUrl), '/');
+            }
 
             if ($i+1 < $data['length']) {
                 $this->dynamicRecursiveProcess($parametersLists, $i + 1, $data);
@@ -152,7 +159,7 @@ class StatefullCacheRefresh extends Command {
         $file = new \SplFileInfo($data['url'] . '.html');
         @mkdir($this->cachePath . $file->getPath(), 0777, true);
 
-        $pageContents = $pagesCrawler->getPageContents($data['url']);
+        $pageContents = $pagesCrawler->getPageContents($data['use_internal_url'] ? $data['internal_url'] : $data['url']);
 
         file_put_contents($this->cachePath . $file->getPathname(), $pageContents);
     }
@@ -165,10 +172,10 @@ class StatefullCacheRefresh extends Command {
     protected function getOptions()
     {
         return array(
-		array('regular', null, InputOption::VALUE_NONE, 'Run the regular step.'),
-		array('dynamic', null, InputOption::VALUE_NONE, 'Run the dynamic step.'),
-		array('dynamic-item', null, InputOption::VALUE_OPTIONAL | InputOption::VALUE_IS_ARRAY, 'ID of the Dynamic URL registered.', []),
-		array('blacklist', null, InputOption::VALUE_NONE, 'Generate the blacklist file.'),
+			array('regular', null, InputOption::VALUE_NONE, 'Run the regular step.'),
+			array('dynamic', null, InputOption::VALUE_NONE, 'Run the dynamic step.'),
+			array('dynamic-item', null, InputOption::VALUE_OPTIONAL | InputOption::VALUE_IS_ARRAY, 'ID of the Dynamic URL registered.', []),
+			array('blacklist', null, InputOption::VALUE_NONE, 'Generate the blacklist file.'),
         );
     }
 

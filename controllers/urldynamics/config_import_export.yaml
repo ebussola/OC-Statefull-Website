@@ -1,0 +1,11 @@
+# ===================================
+#  Import/Export Behavior Config
+# ===================================
+
+import:
+    title: Import Config
+    modelClass: \Ebussola\Statefull\Models\UrlDynamicImporter
+    list: $/ebussola/statefull/models/urldynamic/columns.yaml
+
+export:
+    useList: true

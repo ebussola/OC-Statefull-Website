@@ -6,6 +6,20 @@ fields:
   url:
     label: URL
 
+  use_internal_url:
+    label: Use internal URL
+    type: checkbox
+    span: left
+    comment: This route uses a different internal URL
+
+  internal_url:
+    label: Internal URL
+    span: right
+    trigger:
+        action: show
+        field: use_internal_url
+        condition: checked
+
   parameters_lists:
     type: repeater
     form:

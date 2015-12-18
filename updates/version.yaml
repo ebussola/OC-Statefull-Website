@@ -2,3 +2,11 @@
   - First version of statefull
   - create_url_blacklists_table.php
   - create_url_dynamics_table.php
+
+1.0.2:
+  - Added option to internal URL
+  - add_columns_url_dynamics_table.php
+
+1.0.3:
+  - Added unique column
+  - add_unique_column.php
