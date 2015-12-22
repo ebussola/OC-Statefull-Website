@@ -5,7 +5,9 @@
 import:
     title: Import Config
     modelClass: \Ebussola\Statefull\Models\UrlDynamicImporter
-    list: $/ebussola/statefull/models/urldynamic/columns.yaml
+    list: $/ebussola/statefull/models/urldynamic/full_columns.yaml
 
 export:
-    useList: true
+    title: Export Config
+    modelClass: \Ebussola\Statefull\Models\UrlDynamicExporter
+    list: $/ebussola/statefull/models/urldynamic/full_columns.yaml
