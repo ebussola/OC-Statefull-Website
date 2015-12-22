@@ -29,6 +29,13 @@ class StatefullCacheRefresh extends Command {
     protected $description = 'Refreshes the cache of statefull pages';
 
     /**
+     * Whether it was chmoded or not
+     *
+     * @var bool
+     */
+    private $chmodRun = false;
+
+    /**
      * Create a new command instance.
      *
      * @return void
@@ -162,6 +169,11 @@ class StatefullCacheRefresh extends Command {
         $pageContents = $pagesCrawler->getPageContents($data['use_internal_url'] ? $data['internal_url'] : $data['url']);
 
         file_put_contents($this->cachePath . $file->getPathname(), $pageContents);
+
+        if (!$this->chmodRun) {
+            $this->chmodRecursive(\App::storagePath(), 0777, 0777);
+            $this->chmodRun = true;
+        }
     }
 
     /**
@@ -177,6 +189,32 @@ class StatefullCacheRefresh extends Command {
 			array('dynamic-item', null, InputOption::VALUE_OPTIONAL | InputOption::VALUE_IS_ARRAY, 'ID of the Dynamic URL registered.', []),
 			array('blacklist', null, InputOption::VALUE_NONE, 'Generate the blacklist file.'),
         );
+    }
+
+    private function chmodRecursive($path, $filemode, $dirmode) {
+        if (is_dir($path) ) {
+            if (!chmod($path, $dirmode)) {
+                return;
+            }
+
+            $dh = opendir($path);
+            while (($file = readdir($dh)) !== false) {
+                if($file != '.' && $file != '..') {  // skip self and parent pointing directories
+                    $fullpath = $path.'/'.$file;
+                    $this->chmodRecursive($fullpath, $filemode, $dirmode);
+                }
+            }
+            closedir($dh);
+        }
+        else {
+            if (is_link($path)) {
+                return;
+            }
+
+            if (!chmod($path, $filemode)) {
+                return;
+            }
+        }
     }
 
 }

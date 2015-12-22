@@ -72,11 +72,9 @@ You can call the function window.ebussolaStatefullCheckMessages whenever you wan
 
 
 ```php
-$request = \Symfony\Component\HttpFoundation\Request::createFromGlobals();
-
-if ($request->isMethod('GET')) {
+if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $cachePath = __DIR__ . '/storage/statefull-cache';
-    $pathInfo = $request->getPathInfo();
+    $pathInfo = isset($_SERVER['PATH_INFO']) ? $_SERVER['PATH_INFO'] : '/';
     $blacklist = file_exists($cachePath . '/index-blacklist.config') ?
         file_get_contents($cachePath . '/index-blacklist.config') : null;
 
@@ -89,4 +87,7 @@ if ($request->isMethod('GET')) {
         }
     }
 }
-```
+``
+
+
+The Command statefull:cache:refresh MUST be executed by the root!
