@@ -21,7 +21,7 @@ class UrlDynamic extends Model
     /**
      * @var array Fillable fields
      */
-    protected $fillable = ['url', 'parameters_lists'];
+    protected $fillable = ['url', 'parameters_lists', 'use_internal_url', 'internal_url'];
 
     /**
      * @var array List of attribute names which are json encoded and decoded from the database.

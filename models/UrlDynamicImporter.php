@@ -31,6 +31,8 @@ class UrlDynamicImporter extends ImportModel
     {
         foreach ($results as $row => $data) {
             try {
+                $data['parameters_lists'] = json_decode($data['parameters_lists']);
+
                 UrlDynamic::create($data);
                 $this->logCreated();
             }
