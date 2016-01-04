@@ -72,9 +72,19 @@ You can call the function window.ebussolaStatefullCheckMessages whenever you wan
 
 
 ```php
-if ($_SERVER['REQUEST_METHOD'] === 'GET') {
+/*
+|--------------------------------------------------------------------------
+| eBussola.Statefull Plugin
+|--------------------------------------------------------------------------
+|
+| Statefull check if an cache file exists and loads it, preventing to start the whole framework.
+|
+ */
+$request = \Symfony\Component\HttpFoundation\Request::createFromGlobals();
+
+if ($request->isMethod('GET')) {
     $cachePath = __DIR__ . '/storage/statefull-cache';
-    $pathInfo = isset($_SERVER['PATH_INFO']) ? $_SERVER['PATH_INFO'] : '/';
+    $pathInfo = $request->getPathInfo();
     $blacklist = file_exists($cachePath . '/index-blacklist.config') ?
         file_get_contents($cachePath . '/index-blacklist.config') : null;
 
@@ -87,7 +97,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         }
     }
 }
-``
+```
 
 
 The Command statefull:cache:refresh MUST be executed by the root!
