@@ -82,7 +82,7 @@ You can call the function window.ebussolaStatefullCheckMessages whenever you wan
  */
 $request = \Symfony\Component\HttpFoundation\Request::createFromGlobals();
 
-if ($request->isMethod('GET')) {
+if ($request->isMethod('GET') && count($_GET) === 0) {
     $cachePath = __DIR__ . '/storage/statefull-cache';
     $pathInfo = $request->getPathInfo();
     $blacklist = file_exists($cachePath . '/index-blacklist.config') ?

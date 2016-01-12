@@ -2,6 +2,7 @@
 
 namespace ebussola\statefull\commands;
 
+use ebussola\statefull\classes\CacheFileHandler;
 use ebussola\statefull\classes\PagesCrawler;
 use Ebussola\Statefull\Models\UrlBlacklist;
 use Ebussola\Statefull\Models\UrlDynamic;
@@ -9,10 +10,6 @@ use Illuminate\Console\Command;
 use Symfony\Component\Console\Input\InputOption;
 
 class StatefullCacheRefresh extends Command {
-
-    const CACHE_DIR_NAME = 'statefull-cache';
-
-    private $cachePath;
 
     /**
      * The console command name.
@@ -29,15 +26,15 @@ class StatefullCacheRefresh extends Command {
     protected $description = 'Refreshes the cache of statefull pages';
 
     /**
-     * Create a new command instance.
-     *
-     * @return void
+     * @var CacheFileHandler
      */
+    protected $cacheFileHandler;
+
     public function __construct()
     {
         parent::__construct();
 
-        $this->cachePath = \App::storagePath() . '/' . self::CACHE_DIR_NAME;
+        $this->cacheFileHandler = new CacheFileHandler();
     }
 
     /**
@@ -64,10 +61,7 @@ class StatefullCacheRefresh extends Command {
             $pagesCrawler = new PagesCrawler();
             $pagesCrawler->map(function($pageInfo) {
                 if ($pageInfo['pageType'] == 'regular') {
-                    $file = new \SplFileInfo($pageInfo['url'] . '.html');
-
-                    @mkdir($this->cachePath . $file->getPath(), 0777, true);
-                    file_put_contents($this->cachePath . $file->getPathname(), $pageInfo['content']());
+                    $this->cacheFileHandler->saveCacheFile($pageInfo['url'], $pageInfo['content']());
                 }
             });
         }
@@ -98,7 +92,7 @@ class StatefullCacheRefresh extends Command {
 
         if ($this->option('blacklist') || $runAll) {
             // Index Blacklist
-            @mkdir($this->cachePath, 0777, true);
+            @mkdir($this->cacheFileHandler->getCachePath(), 0777, true);
             $indexBlacklist = join('',
                 array_map(
                     function ($url) {
@@ -108,7 +102,7 @@ class StatefullCacheRefresh extends Command {
                     UrlBlacklist::all()->lists('url')
                 )
             );
-            file_put_contents($this->cachePath . '/index-blacklist.config', $indexBlacklist);
+            file_put_contents($this->cacheFileHandler->getCachePath() . '/index-blacklist.config', $indexBlacklist);
 
             // Route Blacklist
             $routeBlacklist = join('',
@@ -120,7 +114,7 @@ class StatefullCacheRefresh extends Command {
                     UrlBlacklist::all()->lists('url')
                 )
             );
-            file_put_contents($this->cachePath . '/route-blacklist.config', $routeBlacklist);
+            file_put_contents($this->cacheFileHandler->getCachePath() . '/route-blacklist.config', $routeBlacklist);
         }
     }
 
@@ -156,12 +150,9 @@ class StatefullCacheRefresh extends Command {
 
     private function generateCacheFile($data) {
         $pagesCrawler = new PagesCrawler();
-        $file = new \SplFileInfo($data['url'] . '.html');
-        @mkdir($this->cachePath . $file->getPath(), 0777, true);
-
         $pageContents = $pagesCrawler->getPageContents($data['use_internal_url'] ? $data['internal_url'] : $data['url']);
 
-        file_put_contents($this->cachePath . $file->getPathname(), $pageContents);
+        $this->cacheFileHandler->saveCacheFile($data['url'], $pageContents);
     }
 
     /**

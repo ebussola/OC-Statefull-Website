@@ -3,11 +3,10 @@
 namespace ebussola\statefull\commands;
 
 
+use ebussola\statefull\classes\CacheFileHandler;
 use Illuminate\Console\Command;
 
 class StatefullCacheClean extends Command {
-
-    private $cachePath;
 
     /**
      * The console command name.
@@ -24,6 +23,11 @@ class StatefullCacheClean extends Command {
     protected $description = 'Refreshes the cache of statefull pages';
 
     /**
+     * @var CacheFileHandler
+     */
+    protected $cacheFileHandler;
+
+    /**
      * Create a new command instance.
      *
      * @return void
@@ -32,7 +36,7 @@ class StatefullCacheClean extends Command {
     {
         parent::__construct();
 
-        $this->cachePath = \App::storagePath() . '/' . StatefullCacheRefresh::CACHE_DIR_NAME;
+        $this->cacheFileHandler = new CacheFileHandler();
     }
 
     /**
@@ -42,23 +46,7 @@ class StatefullCacheClean extends Command {
      */
     public function fire()
     {
-        $deltree = function($dir) {
-            $it = new \RecursiveDirectoryIterator($dir, \RecursiveDirectoryIterator::SKIP_DOTS);
-            $files = new \RecursiveIteratorIterator($it,
-                \RecursiveIteratorIterator::CHILD_FIRST);
-            foreach($files as $file) {
-                if ($file->isDir()){
-                    rmdir($file->getRealPath());
-                } else {
-                    unlink($file->getRealPath());
-                }
-            }
-            rmdir($dir);
-        };
-
-        if (file_exists($this->cachePath)) {
-            $deltree($this->cachePath);
-        }
+        $this->cacheFileHandler->deleteCacheFile('/', true);
     }
 
     /**

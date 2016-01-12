@@ -33,3 +33,14 @@ fields:
     label: Delay to close the alert
     default: 4500
     comment: Millisecond (ms) / Set 0 to infinity
+
+
+
+  cache_section:
+    label: Cache
+    type: section
+
+  cache_lazy_cache:
+    label: Lazy Cache
+    type: switch
+    comment: Enable lazy cache. The cache will be created when the page is acessed.

@@ -1,0 +1,14 @@
+<h1>URL Purge</h1>
+
+<form data-request="onPurge" data-request-success="swal({ title: 'Cache purged', type: 'success'})">
+    <div class="form-group">
+        <label for="form-ebussola-statefull-path">Enter the path you want to purge</label>
+        <input type="text" class="form-control" id="form-ebussola-statefull-path" name="path" placeholder="URL">
+    </div>
+    <div class="checkbox">
+        <label>
+            <input type="checkbox" name="include_subpaths">Purge all sub paths
+        </label>
+    </div>
+    <button type="submit" class="btn btn-default">Purge</button>
+</form>

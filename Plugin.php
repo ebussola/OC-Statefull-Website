@@ -88,6 +88,12 @@ class Plugin extends PluginBase
                         'icon'        => 'icon-minus-circle',
                         'url'         => \Backend::url('ebussola/statefull/urlblacklist'),
                         'permissions' => ['ebussola.statefull.*']
+                    ],
+                    'urlpurge' => [
+                        'label'       => 'URL Purge',
+                        'icon'        => 'icon-trash',
+                        'url'         => \Backend::url('ebussola/statefull/urldynamics/purge'),
+                        'permissions' => ['ebussola.statefull.*']
                     ]
                 ]
             ]

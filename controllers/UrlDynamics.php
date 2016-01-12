@@ -2,6 +2,7 @@
 
 use BackendMenu;
 use Backend\Classes\Controller;
+use ebussola\statefull\classes\CacheFileHandler;
 use ebussola\statefull\classes\PagesCrawler;
 use Ebussola\Statefull\Models\UrlDynamic;
 use League\Flysystem\Exception;
@@ -28,6 +29,11 @@ class UrlDynamics extends Controller
         BackendMenu::setContext('eBussola.Statefull', 'statefull', 'urldynamics');
     }
 
+    public function purge()
+    {
+        BackendMenu::setContext('eBussola.Statefull', 'statefull', 'urlpurge');
+    }
+
     public function onSearchDynamics()
     {
         $pageCrawler = new PagesCrawler();
@@ -48,6 +54,13 @@ class UrlDynamics extends Controller
         }, $pageCrawler->getPageInfos('dynamic'));
 
         return $this->listRefresh();
+    }
+
+    public function onPurge()
+    {
+        $data = post();
+        $cacheFileHanlder = new CacheFileHandler();
+        $cacheFileHanlder->deleteCacheFile($data['path'], isset($data['include_subpaths']));
     }
 
 }
