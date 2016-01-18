@@ -6,40 +6,47 @@
  * Time: 2:38 PM
  */
 
+use ebussola\statefull\classes\CacheFileHandler;
+
 Route::get('/ebussola-statefull-ajax-flash-message', function() {
     return Response::json(\Flash::toArray());
 });
 
-if (!Config::get('app.debug') && count($_GET) === 0) {
-    $cachePath = App::basePath() . '/storage/statefull-cache';
+if (!Config::get('app.debug')) {
+    $cachePath = (new CacheFileHandler())->getCachePath();
     $blacklist = file_exists($cachePath . '/route-blacklist.config') ?
         file_get_contents($cachePath . '/route-blacklist.config') : null;
+    $paramBlacklist = file_exists($cachePath . '/param-blacklist.config') ?
+        json_decode(file_get_contents($cachePath . '/param-blacklist.config'), true) : [];
 
-    Route::get('/{route}', function ($route) use ($cachePath) {
-        $file = $cachePath . '/' . $route . '.html';
-        if (file_exists($file)) {
-            return file_get_contents($file);
-        } else {
+    $paramBlacklistFunctionFile = $cachePath . '/param-blacklist-function.php';
+    if (file_exists($paramBlacklistFunctionFile)) {
+        include $paramBlacklistFunctionFile;
 
-
-
-
-            /**
-             * For development purpose, you must set the loopbackUrl on config to use a different baseURL for internal php server.
-             * Because it can handle only one request at a time, you need to open 2 servers with different port or hostname.
-             */
-            $responseRaw = file_get_contents(Config::get('app.loopbackUrl', Config::get('app.url')) .'/' . $route . '?nocache=1');
+        if (!isParamBlacklisted($paramBlacklist)) {
+            Route::get('/{route}', function ($route) use ($cachePath) {
+                $file = $cachePath . '/' . $route . '.html';
+                if (file_exists($file)) {
+                    return file_get_contents($file);
+                } else {
 
 
+                    /**
+                     * For development purpose, you must set the loopbackUrl on config to use a different baseURL for internal php server.
+                     * Because it can handle only one request at a time, you need to open 2 servers with different port or hostname.
+                     */
+                    $responseRaw = file_get_contents(Config::get('app.loopbackUrl', Config::get('app.url')) . '/' . $route . '?nocache=1');
 
 
-            if (\Ebussola\Statefull\Models\Settings::get('cache_lazy_cache', false)) {
-                file_put_contents($file, $responseRaw);
-            }
+                    if (\Ebussola\Statefull\Models\Settings::get('cache_lazy_cache', false)) {
+                        (new CacheFileHandler())->saveCacheFile($route, $responseRaw);
+                    }
 
-            return $responseRaw;
+                    return $responseRaw;
+                }
+            })
+                ->where('route', '^(?!backend)(?!combine)'. $blacklist .'.*')
+            ;
         }
-    })
-        ->where('route', '^(?!backend)(?!combine)'. $blacklist .'.*')
-    ;
+    }
 }

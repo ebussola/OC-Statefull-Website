@@ -1,0 +1,31 @@
+# ===================================
+#  Form Behavior Config
+# ===================================
+
+# Record name
+name: Get Param Blacklist
+
+# Model Form Field configuration
+form: $/ebussola/statefull/models/getparamblacklist/fields.yaml
+
+# Model Class name
+modelClass: Ebussola\Statefull\Models\GetParamBlacklist
+
+# Default redirect location
+defaultRedirect: ebussola/statefull/getparamblacklist
+
+# Create page
+create:
+    title: Create Get Param Blacklist
+    redirect: ebussola/statefull/getparamblacklist/update/:id
+    redirectClose: ebussola/statefull/getparamblacklist
+
+# Update page
+update:
+    title: Edit Get Param Blacklist
+    redirect: ebussola/statefull/getparamblacklist
+    redirectClose: ebussola/statefull/getparamblacklist
+
+# Preview page
+preview:
+    title: Preview Get Param Blacklist

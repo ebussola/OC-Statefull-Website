@@ -1,0 +1,17 @@
+# ===================================
+#  Form Field Definitions
+# ===================================
+
+fields:
+
+    name:
+        label: Name
+
+    values:
+        label: Values to be blacklisted
+        commentAbove: Leave it without values to blacklist any value for this GET param
+        type: repeater
+        form:
+            fields:
+                value:
+                    label: Value

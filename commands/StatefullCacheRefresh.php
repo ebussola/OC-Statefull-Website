@@ -4,6 +4,7 @@ namespace ebussola\statefull\commands;
 
 use ebussola\statefull\classes\CacheFileHandler;
 use ebussola\statefull\classes\PagesCrawler;
+use Ebussola\Statefull\Models\GetParamBlacklist;
 use Ebussola\Statefull\Models\UrlBlacklist;
 use Ebussola\Statefull\Models\UrlDynamic;
 use Illuminate\Console\Command;
@@ -91,8 +92,9 @@ class StatefullCacheRefresh extends Command {
 
 
         if ($this->option('blacklist') || $runAll) {
-            // Index Blacklist
             @mkdir($this->cacheFileHandler->getCachePath(), 0777, true);
+
+            // Index Blacklist
             $indexBlacklist = join('',
                 array_map(
                     function ($url) {
@@ -115,6 +117,19 @@ class StatefullCacheRefresh extends Command {
                 )
             );
             file_put_contents($this->cacheFileHandler->getCachePath() . '/route-blacklist.config', $routeBlacklist);
+
+            // Param Blacklist
+            $paramBlacklist = GetParamBlacklist::all();
+            $paramBlacklist->push([
+                'name' => 'nocache',
+                'values' => json_encode([
+                    ['value' => '1']
+                ])
+            ]);
+            file_put_contents($this->cacheFileHandler->getCachePath() . '/param-blacklist.config', $paramBlacklist->toJson());
+
+            // Param Blacklist function
+            copy(\App::pluginsPath() . '/ebussola/statefull/assets/param-blacklist-function.php', $this->cacheFileHandler->getCachePath() . '/param-blacklist-function.php');
         }
     }
 

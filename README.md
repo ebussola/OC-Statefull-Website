@@ -82,18 +82,25 @@ You can call the function window.ebussolaStatefullCheckMessages whenever you wan
  */
 $request = \Symfony\Component\HttpFoundation\Request::createFromGlobals();
 
-if ($request->isMethod('GET') && count($_GET) === 0) {
+if ($request->isMethod('GET')) {
     $cachePath = __DIR__ . '/storage/statefull-cache';
     $pathInfo = $request->getPathInfo();
     $blacklist = file_exists($cachePath . '/index-blacklist.config') ?
         file_get_contents($cachePath . '/index-blacklist.config') : null;
+    $paramBlacklist = file_exists($cachePath . '/param-blacklist.config') ?
+        json_decode(file_get_contents($cachePath . '/param-blacklist.config'), true) : [];
 
-    if (preg_match('/^(?!\/backend)(?!\/combine)' . $blacklist . '/i', $pathInfo) === 1) {
-        $file = $cachePath . $pathInfo . '.html';
+    $paramBlacklistFunctionFile = $cachePath . '/param-blacklist-function.php';
+    if (file_exists($paramBlacklistFunctionFile)) {
+        include $paramBlacklistFunctionFile;
 
-        if (file_exists($file)) {
-            echo file_get_contents($file);
-            exit(0);
+        if (preg_match('/^(?!\/backend)(?!\/combine)' . $blacklist . '/i', $pathInfo) === 1 && !isParamBlacklisted($paramBlacklist)) {
+            $file = $cachePath . $pathInfo . '.html';
+
+            if (file_exists($file)) {
+                echo file_get_contents($file);
+                exit(0);
+            }
         }
     }
 }

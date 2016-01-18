@@ -89,6 +89,12 @@ class Plugin extends PluginBase
                         'url'         => \Backend::url('ebussola/statefull/urlblacklist'),
                         'permissions' => ['ebussola.statefull.*']
                     ],
+                    'getparamblacklist' => [
+                        'label'       => 'Get Param Blacklist',
+                        'icon'        => 'icon-minus-circle',
+                        'url'         => \Backend::url('ebussola/statefull/getparamblacklist'),
+                        'permissions' => ['ebussola.statefull.*']
+                    ],
                     'urlpurge' => [
                         'label'       => 'URL Purge',
                         'icon'        => 'icon-trash',
