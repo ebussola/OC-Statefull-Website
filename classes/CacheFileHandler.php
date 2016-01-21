@@ -22,7 +22,7 @@ class CacheFileHandler
     }
 
     public function saveCacheFile($pagePath, $content) {
-        $file = new \SplFileInfo($pagePath . '.html');
+        $file = new \SplFileInfo('/' . trim($pagePath, '/') . '.html');
         @mkdir($this->cachePath . $file->getPath(), 0777, true);
 
         file_put_contents($this->cachePath . $file->getPathname(), $content);
