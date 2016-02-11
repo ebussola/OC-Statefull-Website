@@ -31,11 +31,25 @@ if (!Config::get('app.debug')) {
                 } else {
 
 
-                    /**
-                     * For development purpose, you must set the loopbackUrl on config to use a different baseURL for internal php server.
-                     * Because it can handle only one request at a time, you need to open 2 servers with different port or hostname.
-                     */
-                    $responseRaw = file_get_contents(Config::get('app.loopbackUrl', Config::get('app.url')) . '/' . $route . '?nocache=1');
+                    try {
+                        /**
+                         * For development purpose, you must set the loopbackUrl on config to use a different baseURL for internal php server.
+                         * Because it can handle only one request at a time, you need to open 2 servers with different port or hostname.
+                         */
+                        $responseRaw = file_get_contents(Config::get('app.loopbackUrl', Config::get('app.url')) . '/' . $route . '?nocache=1');
+                    }
+                    catch (ErrorException $e) {
+                        if (strstr($e->getMessage(), '404 Not Found')) {
+                            $controller = App::make('Cms\Classes\Controller');
+                            $response = $controller->run('/404');
+                            $response->setStatusCode(404);
+
+                            return $response;
+                        }
+                        else {
+                            throw $e;
+                        }
+                    }
 
 
                     if (\Ebussola\Statefull\Models\Settings::get('cache_lazy_cache', false)) {
