@@ -148,7 +148,8 @@ class StatefullCacheRefresh extends Command {
         }
 
         foreach ($parsedList as $parsedItem) {
-
+            $this->currentVars[$list['name']] = $parsedItem;
+            
             $data['url'] = rtrim(str_replace($list['name'], $parsedItem, $originalUrl), '/');
 
             if ($data['use_internal_url']) {
