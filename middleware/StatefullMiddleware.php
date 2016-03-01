@@ -25,8 +25,8 @@ class StatefullMiddleware {
 	{
 		if (!\Config::get('app.debug') && Plugin::$routerActive === false) {
 			$cachePath = (new CacheFileHandler())->getCachePath();
-			$blacklist = file_exists($cachePath . '/route-blacklist.config') ?
-				file_get_contents($cachePath . '/route-blacklist.config') : null;
+			$blacklist = file_exists($cachePath . '/index-blacklist.config') ?
+				file_get_contents($cachePath . '/index-blacklist.config') : null;
 			$paramBlacklist = file_exists($cachePath . '/param-blacklist.config') ?
 				json_decode(file_get_contents($cachePath . '/param-blacklist.config'), true) : [];
 
