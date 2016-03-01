@@ -11,6 +11,13 @@ class Plugin extends PluginBase
 {
 
     /**
+     * Flag used to identify if the router is active or not
+     *
+     * @var bool
+     */
+    public static $routerActive = false;
+
+    /**
      * Returns information about this plugin.
      *
      * @return array

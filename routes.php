@@ -13,6 +13,8 @@ Route::get('/ebussola-statefull-ajax-flash-message', function() {
 });
 
 if (!Config::get('app.debug')) {
+    \eBussola\Statefull\Plugin::$routerActive = true;
+
     $cachePath = (new CacheFileHandler())->getCachePath();
     $blacklist = file_exists($cachePath . '/route-blacklist.config') ?
         file_get_contents($cachePath . '/route-blacklist.config') : null;
