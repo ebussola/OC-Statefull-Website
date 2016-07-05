@@ -54,6 +54,8 @@ class StatefullMiddleware {
 								$response = $controller->run('/404');
 								$response->setStatusCode(404);
 
+								$this->tryLazyCache($request->getPathInfo(), $response->getContent());
+
 								return $response;
 							} else {
 								throw $e;
@@ -61,9 +63,7 @@ class StatefullMiddleware {
 						}
 
 
-						if (\Ebussola\Statefull\Models\Settings::get('cache_lazy_cache', false)) {
-							(new CacheFileHandler())->saveCacheFile($request->getPathInfo(), $responseRaw);
-						}
+						$this->tryLazyCache($request->getPathInfo(), $responseRaw);
 
 						return \Response::make($responseRaw);
 					}
@@ -72,6 +72,17 @@ class StatefullMiddleware {
 		}
 
 		return $next($request);
+	}
+
+	/**
+	 * @param $request
+	 * @param $responseRaw
+	 */
+	private function tryLazyCache($pagePath, $responseRaw)
+	{
+		if (\Ebussola\Statefull\Models\Settings::get('cache_lazy_cache', false)) {
+			(new CacheFileHandler())->saveCacheFile($pagePath, $responseRaw);
+		}
 	}
 
 }
