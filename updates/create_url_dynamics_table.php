@@ -17,6 +17,8 @@ class CreateUrlDynamicsTable extends Migration
 
             $table->string('url')->unique();
             $table->longText('parameters_lists');
+            $table->boolean('use_internal_url');
+            $table->string('internal_url');
         });
     }
 
