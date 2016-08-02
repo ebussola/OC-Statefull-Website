@@ -31,6 +31,13 @@ class StatefullCacheRefresh extends Command {
      */
     protected $cacheFileHandler;
 
+    /**
+     * Property used to store current variable values
+     *
+     * @var array
+     */
+    protected $currentVars = [];
+
     public function __construct()
     {
         parent::__construct();
@@ -72,12 +79,22 @@ class StatefullCacheRefresh extends Command {
 
             $mapUrlDynamic = function ($urlDynamic) {
                 $length = count($urlDynamic->parameters_lists);
-                $this->dynamicRecursiveProcess($urlDynamic->parameters_lists, 0, [
-                    'url' => $urlDynamic->url,
-                    'use_internal_url' => $urlDynamic->use_internal_url,
-                    'internal_url' => $urlDynamic->internal_url,
-                    'length' => $length
-                ]);
+                if ($length > 0) {
+                    $this->dynamicRecursiveProcess($urlDynamic->parameters_lists, 0, [
+                        'url' => $urlDynamic->url,
+                        'use_internal_url' => $urlDynamic->use_internal_url,
+                        'internal_url' => $urlDynamic->internal_url,
+                        'length' => $length
+                    ]);
+                }
+                else {
+                    $this->generateCacheFile([
+                        'url' => $urlDynamic->url,
+                        'use_internal_url' => $urlDynamic->use_internal_url,
+                        'internal_url' => $urlDynamic->internal_url,
+                        'length' => $length
+                    ]);
+                }
             };
 
             if (count($this->option('dynamic-item')) === 0) {
@@ -149,7 +166,7 @@ class StatefullCacheRefresh extends Command {
 
         foreach ($parsedList as $parsedItem) {
             $this->currentVars[$list['name']] = $parsedItem;
-            
+
             $data['url'] = rtrim(str_replace($list['name'], $parsedItem, $originalUrl), '/');
 
             if ($data['use_internal_url']) {
