@@ -16,11 +16,13 @@ Choose a structure to use and follow the instructions
 
 ### Local cache pages (low performance / easy setup difficult / no extra costs )
 
-Don't need the AJAX Page Container.
+Don't need the AJAX Page Container
 
-I highly recommend to use the "Blazing fast page delivery" described below
+### CloudFlare cache layer (high performance / medium setup difficult / cost $20 per month)
 
-### S3 static page host (high performance / hard setup difficult / low cost) [NOT IMPLEMENTED]
+Use the AJAX Page Container
+
+### S3 static page host (high performance / hard setup difficult / low cost)
 
 Use the AJAX Page Container
 
@@ -28,7 +30,7 @@ Use the AJAX Page Container
 ## The AJAX Page Container
 
 It is used to centralize the ajax framework requests. Because now you are running your website on
-another infrastructure (some cases) you need to keep your plugins working.
+another infrastructure you need to keep your plugins working.
 
 ### Setup
 
@@ -52,7 +54,7 @@ Remember to change the route on the page too.
 
 Only use this feature if your site use the [flash tag markup](https://octobercms.com/docs/markup/tag-flash)
 
-Because of your site is now statefull, you will need to check if there are any message to be delivered to user.
+Because of your site is now statefull, you will need to check if there is any message to be delivered to user.
 This component do this job.
 
 ### Setup
@@ -68,12 +70,6 @@ or set the wrapper element where the alert will be placed.
 
 You can call the function window.ebussolaStatefullCheckMessages whenever you want to check for new messages.
 
-
-## Blazing fast page delivery
-
-For an even better performance, install this piece of code inside your index.php just after the composer boot.
-
-PS.: every time you update the OctoberCMS your index.php is rewritten, so you need to re-install this code to it.
 
 ```php
 /*
@@ -109,3 +105,6 @@ if ($request->isMethod('GET')) {
     }
 }
 ```
+
+
+The Command statefull:cache:refresh MUST be executed by the root!

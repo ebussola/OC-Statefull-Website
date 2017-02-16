@@ -24,8 +24,10 @@ class CacheFileHandler
     public function saveCacheFile($pagePath, $content) {
         $file = new \SplFileInfo('/' . trim($pagePath, '/') . '.html');
         @mkdir($this->cachePath . $file->getPath(), 0777, true);
+        @chmod($this->cachePath . $file->getPath(), 0777);
 
         file_put_contents($this->cachePath . $file->getPathname(), $content);
+        chmod($this->cachePath . $file->getPathname(), 0777);
     }
 
     public function deleteCacheFile($pagePath, $recursive=false)

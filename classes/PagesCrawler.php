@@ -50,7 +50,7 @@ class PagesCrawler
             );
             // end of hack
 
-            $pages = array_merge($pages, \RainLab\Pages\Classes\Page::listInTheme($theme, true));
+            $pages = $pages->merge(\RainLab\Pages\Classes\Page::listInTheme($theme, true));
         }
 
         foreach ($pages as $i => $page) {

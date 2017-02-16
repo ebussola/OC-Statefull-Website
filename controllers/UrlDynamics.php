@@ -59,8 +59,8 @@ class UrlDynamics extends Controller
     public function onPurge()
     {
         $data = post();
-        $cacheFileHanlder = new CacheFileHandler();
-        $cacheFileHanlder->deleteCacheFile($data['path'], isset($data['include_subpaths']));
+        $cacheFileHandler = new CacheFileHandler();
+        $cacheFileHandler->deleteCacheFile($data['path'], isset($data['include_subpaths']));
     }
 
 }

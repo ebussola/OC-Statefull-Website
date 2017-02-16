@@ -11,13 +11,8 @@ class AddColumnsUrlDynamicsTable extends Migration
     {
         Schema::table('ebussola_statefull_url_dynamics', function(Blueprint $table)
         {
-            if (!in_array("use_internal_url", Schema::getColumnListing($table->getTable()))) {
-                $table->boolean('use_internal_url');
-            }
-
-            if (!in_array("internal_url", Schema::getColumnListing($table->getTable()))) {
-                $table->string('internal_url');
-            }
+            $table->boolean('use_internal_url');
+            $table->string('internal_url');
         });
     }
 

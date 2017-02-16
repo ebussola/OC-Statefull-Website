@@ -110,6 +110,7 @@ class StatefullCacheRefresh extends Command {
 
         if ($this->option('blacklist') || $runAll) {
             @mkdir($this->cacheFileHandler->getCachePath(), 0777, true);
+            @chmod($this->cacheFileHandler->getCachePath(), 0777);
 
             // Index Blacklist
             $indexBlacklist = join('',
@@ -122,6 +123,7 @@ class StatefullCacheRefresh extends Command {
                 )
             );
             file_put_contents($this->cacheFileHandler->getCachePath() . '/index-blacklist.config', $indexBlacklist);
+            chmod($this->cacheFileHandler->getCachePath() . '/index-blacklist.config', 0777);
 
             // Route Blacklist
             $routeBlacklist = join('',
@@ -134,6 +136,7 @@ class StatefullCacheRefresh extends Command {
                 )
             );
             file_put_contents($this->cacheFileHandler->getCachePath() . '/route-blacklist.config', $routeBlacklist);
+            chmod($this->cacheFileHandler->getCachePath() . '/route-blacklist.config', 0777);
 
             // Param Blacklist
             $paramBlacklist = GetParamBlacklist::all();
@@ -144,9 +147,11 @@ class StatefullCacheRefresh extends Command {
                 ])
             ]);
             file_put_contents($this->cacheFileHandler->getCachePath() . '/param-blacklist.config', $paramBlacklist->toJson());
+            chmod($this->cacheFileHandler->getCachePath() . '/param-blacklist.config', 0777);
 
             // Param Blacklist function
             copy(\App::pluginsPath() . '/ebussola/statefull/assets/param-blacklist-function.php', $this->cacheFileHandler->getCachePath() . '/param-blacklist-function.php');
+            chmod($this->cacheFileHandler->getCachePath() . '/param-blacklist-function.php', 0777);
         }
     }
 
