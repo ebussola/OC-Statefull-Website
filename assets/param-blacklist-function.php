@@ -9,7 +9,7 @@ if (!function_exists('isParamBlacklisted')) {
                     $isNameBlacklisted = $result != in_array($param['name'], array_keys($_GET));
 
                     if ($isNameBlacklisted) {
-                        $values = json_decode($param['values'], true);
+                        $values = is_array($param['values']) ? $param['values'] : json_decode($param['values'], true);
 
                         return count($values) === 0 ?: in_array($_GET[$param['name']], array_map(function($item) { return $item['value']; }, $values));
                     }
